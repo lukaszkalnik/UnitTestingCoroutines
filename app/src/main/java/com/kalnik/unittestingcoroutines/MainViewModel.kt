@@ -18,10 +18,10 @@ class MainViewModel(
     private val _user = MutableStateFlow<User?>(null)
     internal val user = _user.asStateFlow()
 
-    private val scope = viewModelScope + coroutineContext
+    private val coroutineScope = viewModelScope + coroutineContext
 
     init {
-        scope.launch {
+        coroutineScope.launch {
             val user = apiService.getUser()
             _user.value = user
         }

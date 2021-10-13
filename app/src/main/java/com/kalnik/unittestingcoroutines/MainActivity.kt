@@ -6,10 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
 
@@ -22,19 +20,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            UserInfo(null)
-        }
-
-        lifecycleScope.launchWhenCreated {
-            viewModel.user.collect {
-
-            }
+            UserInfo(viewModel)
         }
     }
 }
 
 @Composable
-fun UserInfo(user: User?) {
+fun UserInfo(mainViewModel: MainViewModel) {
+    val user = mainViewModel.user.collectAsState().value
+
     if (user != null) {
         Column {
             Text(text = "ID: ${user.id}")
@@ -43,16 +37,4 @@ fun UserInfo(user: User?) {
     } else {
         Text("No user data")
     }
-}
-
-@Preview
-@Composable
-fun UserInfoWithData() {
-    UserInfo(User("id123", "User Name"))
-}
-
-@Preview
-@Composable
-fun UserInfoNoData() {
-    UserInfo(null)
 }
